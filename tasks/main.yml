@@ -8,8 +8,9 @@
     - python-dev
     - libjpeg-dev
     - zlib1g-dev
+    - python-virtualenv
 
-- name: update pip
+- name: update pip and virtualenv
   pip: name={{ item }} state=latest
   with_items:
     - virtualenv
@@ -17,6 +18,13 @@
 
 - name: Manually create virtualenv
   command: virtualenv {{ virtualenv_path }}
+
+- name: Install package dependencies
+  pip: name={{ item }} state=latest virtualenv={{ virtualenv_path }}
+  with_items:
+    - numpy
+    - pykdtree
+
 
 - name: Install mpop from git repo
   pip: name="git+https://github.com/pytroll/mpop.git@{{ mpop_branch }}#egg=mpop" virtualenv={{ virtualenv_path }}
