@@ -1,0 +1,22 @@
+---
+# tasks file for ansible-role-mpop
+- name: install system packages
+  apt: name={{ item }} update_cache=yes
+  with_items:
+    - python-pip
+    - git
+    - python-dev
+    - libjpeg-dev
+    - zlib1g-dev
+
+- name: update pip
+  pip: name={{ item }} state=latest
+  with_items:
+    - virtualenv
+    - pip
+
+- name: Manually create virtualenv
+  command: virtualenv {{ virtualenv_path }}
+
+- name: Install mpop from git repo
+  pip: name="git+https://github.com/pytroll/mpop.git@{{ mpop_branch }}#egg=mpop" virtualenv={{ virtualenv_path }}
