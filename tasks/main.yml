@@ -1,5 +1,8 @@
 ---
 # tasks file for ansible-role-mpop
+- name: add ubuntugis ppa
+  apt_repository: repo=ppa:ubuntugis/ubuntugis-unstable state=present
+
 - name: install system packages
   apt: name={{ item }} update_cache=yes
   with_items:
@@ -9,6 +12,12 @@
     - libjpeg-dev
     - zlib1g-dev
     - python-virtualenv
+    - libgdal-dev
+    - python-gdal
+    - python-lxml
+    - python-scipy
+    - python-pandas
+
 
 - name: update pip and virtualenv
   pip: name={{ item }} state=latest
@@ -17,7 +26,7 @@
     - pip
 
 - name: Manually create virtualenv
-  command: virtualenv {{ virtualenv_path }}
+  command: virtualenv {{ virtualenv_path }} --system-site-packages
 
 - name: Install package dependencies
   pip: name={{ item }} state=latest virtualenv={{ virtualenv_path }}
@@ -28,3 +37,9 @@
 
 - name: Install mpop from git repo
   pip: name="git+https://github.com/pytroll/mpop.git@{{ mpop_branch }}#egg=mpop" virtualenv={{ virtualenv_path }}
+
+- name: Install mipp from git repo
+  pip: name="git+https://github.com/pytroll/mipp.git@{{ mipp_branch }}#egg=mipp" virtualenv={{ virtualenv_path }}
+
+- name: Install python-geotiepoints from git repo
+  pip: name="git+https://github.com/pytroll/python-geotiepoints.git@develop#egg=geotiepoints" virtualenv={{ virtualenv_path }}
